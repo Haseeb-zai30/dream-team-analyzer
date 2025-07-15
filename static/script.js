@@ -28,11 +28,23 @@ function createPlayerInputs(formationKey) {
     rowDiv.style.top = `${10 + index * 18}%`;
 
     row.forEach(position => {
+      const wrapper = document.createElement("div");
+      wrapper.className = "flex flex-col items-center gap-1";
+
       const input = document.createElement("input");
       input.placeholder = position;
       input.name = position;
-      input.className = "p-1 text-xs text-center bg-white bg-opacity-80 border rounded shadow w-full max-w-[70px]";
-      rowDiv.appendChild(input);
+      input.className = "p-1 text-xs text-center bg-white bg-opacity-80 border rounded shadow w-full max-w-[70px] player-input";
+
+      const img = document.createElement("img");
+      img.src = "/static/default.png";
+      img.alt = "Player";
+      img.className = "player-img w-20 h-20 object-cover rounded-full border border-gray-300 shadow";
+
+
+      wrapper.appendChild(input);
+      wrapper.appendChild(img);
+      rowDiv.appendChild(wrapper);
     });
 
     field.appendChild(rowDiv);
@@ -40,14 +52,32 @@ function createPlayerInputs(formationKey) {
 }
 
 createPlayerInputs(formationSelect.value);
+formationSelect.addEventListener("change", () => createPlayerInputs(formationSelect.value));
 
-formationSelect.addEventListener("change", () => {
-  createPlayerInputs(formationSelect.value);
-});
+// Load image on blur (when user types name)
+document.addEventListener("blur", async (e) => {
+  if (e.target && e.target.classList.contains("player-input")) {
+    const name = e.target.value.trim();
+    if (!name) return;
 
+    const wrapper = e.target.closest("div");
+    const imgTag = wrapper.querySelector(".player-img");
+
+    const response = await fetch("/search", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name })
+    });
+
+    const data = await response.json();
+    imgTag.src = data.img || "/static/default.jpg";
+  }
+}, true);
+
+// Analyze Team
 document.getElementById("submitTeam").addEventListener("click", () => {
   const formation = formationSelect.value;
-  const inputs = document.querySelectorAll("#field input");
+  const inputs = document.querySelectorAll(".player-input");
   const team = {};
   let missingFields = [];
 
@@ -68,7 +98,7 @@ document.getElementById("submitTeam").addEventListener("click", () => {
     return;
   }
 
-  fetch("http://127.0.0.1:5000/analyze", {
+  fetch("/analyze", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ formation, team })
