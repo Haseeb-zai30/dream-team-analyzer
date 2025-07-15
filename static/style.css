@@ -1,13 +1,12 @@
 .pitch-container {
   position: relative;
   width: 100%;
-  max-width: 400px;
+  max-width: 420px;
   aspect-ratio: 588 / 1000;
-  background-image: url('/static/img2.jpg'); /* Replace with your pitch image */
+  background-image: url('/static/img2.jpg'); /* Your pitch background */
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
-  margin: auto;
 }
 
 .player-row {
@@ -18,3 +17,28 @@
   padding: 0 1rem;
 }
 
+.player-img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 3px solid #ffffff;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  transition: transform 0.3s ease;
+}
+
+.player-img:hover {
+  transform: scale(1.1);
+}
+
+.player-input {
+  padding: 0.25rem;
+  font-size: 0.75rem;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid #ccc;
+  border-radius: 0.375rem;
+  width: 100%;
+  max-width: 80px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
